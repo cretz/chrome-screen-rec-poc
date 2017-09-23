@@ -1,0 +1,17 @@
+{
+  "name": "attempt1",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node_modules/.bin/standard"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "puppeteer": "^0.11.0"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  }
+}

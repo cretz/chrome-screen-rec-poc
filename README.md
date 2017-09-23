@@ -15,3 +15,7 @@ Now, this might take several attempts w/ several techs (e.g. CEF OSR, Windows DC
 Chrome extensions recordings, webrtc/getUserMedia, Chromecast emulation, etc). Some attempts in this repository may only
 solve one problem (e.g. audio) but the PoC is not considered successful until it can all come together. Bonus points for
 a cross-platform solution.
+
+## Attempts
+
+* [`attempt1/`](attempt1) - Use Chrome automation and Chrome screen capture
