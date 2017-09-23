@@ -23,11 +23,17 @@ chrome.runtime.onConnect.addListener(port => {
                 maxWidth: 1280,
                 minHeight: 720,
                 maxHeight: 720
+                // 60 fps?
+                // minFrameRate: 60
               }
             }
           }, stream => {
             // Now that we have the stream, we can make a media recorder
-            const rec = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' })
+            const rec = new MediaRecorder(stream, {
+              mimeType: 'video/webm; codecs=vp9'
+              // 15 Mbps?
+              // videoBitsPerSecond: 15 * 128 * 1024 * 8
+            })
             rec.onerror = event => console.log('Recorder error', event)
             rec.onstart = event => port.postMessage({ type: 'REC_BACKEND_START' })
             rec.onstop = event => port.postMessage({ type: 'REC_BACKEND_STOP' })
@@ -41,7 +47,7 @@ chrome.runtime.onConnect.addListener(port => {
                 reader.readAsBinaryString(event.data)
               }
             }
-            rec.start(1000)
+            rec.start(8000)
           }, error => console.log('Unable to get user media', error))
         })
         break

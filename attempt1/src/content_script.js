@@ -34,12 +34,21 @@ window.onload = () => {
 
   // Set handlers on the video
   const setVideoHandlers = videoElem => {
-    // Setup onplay handler to trigger recording
-    videoElem.onplay = () => {
-      // Change the title so we can be picked
-      document.title = 'pickme'
-      window.postMessage({ type: 'REC_CLIENT_PLAY', data: { url: window.location.origin } }, '*')
+    if (!videoElem.recorderSet) {
+      videoElem.recorderSet = true
+      console.log('Setting video play handler', videoElem)
+        // Setup onplay handler to trigger recording
+      videoElem.onplay = () => {
+        // Change the title so we can be picked
+        document.title = 'pickme'
+        window.postMessage({ type: 'REC_CLIENT_PLAY', data: { url: window.location.origin } }, '*')
+      }
     }
+  }
+
+  // Find already existing videos
+  for (const videoElem of document.querySelectorAll('video')) {
+    setVideoHandlers(videoElem)
   }
 
   // Start the observer to find any video tags

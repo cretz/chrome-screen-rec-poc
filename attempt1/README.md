@@ -14,10 +14,9 @@
 * Node makes callback for future recorder blobs
 * Navigate to URL
 * Extension frontend script collects video tags and listens for play to notifies extension backend script
-* Node part waits for fullscreen selector (optional) to become available and clicks it (TODO)
-* Node part waits for play button selector to become available and clicks it
+* Node part waits for selectors to show up and clicks em
 * Extension backend script, on play, records the tab and sends a blob every second to the node part
-* The node part serializes the blob to disk (TODO)
+* The node part serializes the blob to disk
 
 It's much more complicated than that. It has to do things like set parameters for auto-selecting the tab, handle message
 passing of blobs, etc. Obviously this is tailored for just this test and would be much more robust in real use.
@@ -26,13 +25,29 @@ passing of blobs, etc. Obviously this is tailored for just this test and would b
 
 * Have chromium dev installed (Windows is at C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe)
 * Nav to `src/`
-* Set env var `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` to `1` to make sure the full Chromium
+* Set env var `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` to `1` to make sure the full Chromium is not downloaded
 * Do `npm install`
 * Go to `node_modules/puppeteer/lib/Launcher.js` and remove the `--disable-extensions` line (see TODO section)
 
 ## Running
 
-  node main.js --url=<some-url> --fullscreen=<selector-for-fullscreen-button> --play=<selector-for-play-button>
+    node main.js --url=URL --file=FILE --click-N=SELECTOR --click-delay-N=MS
+
+Args:
+
+* `--url` - The URL to load. Required.
+* `--file` - The file to save. Default is `out.webm`
+* `--click-N` - A selector to an element to click. `N` should be unique.
+* `--click-delay-N` - Number of milliseconds after seeing the selector before click should occur. Default is no time.
+
+## Results
+
+These are only the results so far
+
+* The video recording causes short pauses on each save interval. Probably need web workers.
+* Video playback is choppy regardless of FPS or bitrate settings. Need to check whether it's just VLC or what.
+
+Chances are this just ain't gonna work for us as Chrome's built-in screen recording is too slow.
 
 ## TODO
 

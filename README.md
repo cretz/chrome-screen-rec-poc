@@ -16,6 +16,8 @@ Chrome extensions recordings, webrtc/getUserMedia, Chromecast emulation, etc). S
 solve one problem (e.g. audio) but the PoC is not considered successful until it can all come together. Bonus points for
 a cross-platform solution.
 
+Good test case: https://www.youtube.com/embed/0vrdgDdPApQ
+
 ## Attempts
 
 * [`attempt1/`](attempt1) - Use Chrome automation and Chrome screen capture
