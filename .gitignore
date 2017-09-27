@@ -1,3 +1,12 @@
 /attempt1/src/package-lock.json
 /attempt1/src/node_modules
 /attempt1/src/out.webm
+/attempt2/src/test.png
+/attempt2/src/debug
+/attempt2/src/release
+/attempt2/src/.qmake.stash
+/attempt2/src/attempt2.pro.user
+/attempt2/src/Makefile
+/attempt2/src/Makefile.Debug
+/attempt2/src/Makefile.Release
+/attempt2/src/test.mpg
