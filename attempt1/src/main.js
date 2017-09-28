@@ -17,7 +17,8 @@ if (!args.url) throw new Error('URL required')
     // Ug: https://bugs.chromium.org/p/chromium/issues/detail?id=706008
     headless: false,
     // TODO: smarter way to find this
-    executablePath: 'C:\\Program Files (x86)\\Google\\Chrome Dev\\Application\\chrome.exe',
+    // Ug: https://bugs.chromium.org/p/chromium/issues/detail?id=769894
+    // executablePath: 'C:\\Program Files (x86)\\Google\\Chrome Dev\\Application\\chrome.exe',
     args: [
       // '--auto-open-devtools-for-tabs',
       '--auto-select-desktop-capture-source=pickme',
@@ -48,11 +49,15 @@ if (!args.url) throw new Error('URL required')
       outStream.write(blob, 'binary')
     }
   })
+  let recorderStopped = false
   await page.exposeFunction('recorderStop', () => {
-    console.log('Rec end')
-    if (outStream) {
+    console.log('Rec end', recorderStopped)
+    if (outStream && !recorderStopped) {
       console.log('Closing ' + outStream.path)
       outStream.end()
+      // Set a window variable saying we're all done
+      recorderStopped = true
+      page.evaluate(() => window.recorderStopped = true)
     }
   })
   await page.evaluateOnNewDocument(() => {
@@ -94,5 +99,32 @@ if (!args.url) throw new Error('URL required')
     }
   }
 
-  // await browser.close();
+  // Wait to see if recorder stopped or N seconds. Returns false on timeout, true if stopped
+  waitForStopOrTimeout = async (seconds) =>
+    await page.waitForFunction('window.recorderStopped', { timeout: seconds * 1000 })
+      .then(() => true)
+      .catch(error =>
+        error.message && error.message.indexOf('timeout') !== -1 ? Promise.resolve(false) : Promise.reject(error)
+      )
+
+  // Loop while waiting for it to stop
+  while (true) {
+    console.log('Waiting for stop or timeout')
+    const stopped = await waitForStopOrTimeout(30)
+    if (!stopped) {
+      console.log('Timed out, stopping all video')
+      await page.evaluate(() => {
+        for (const videoElem of document.querySelectorAll('video')) {
+          videoElem.pause()
+        }
+        window.postMessage({ type: 'REC_CLIENT_STOP' }, '*')
+      })
+    } else {
+      console.log('Stopped')
+      break
+    }
+  }
+
+  console.log('Closing browser')
+  await browser.close()
 })()

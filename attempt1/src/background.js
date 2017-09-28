@@ -1,8 +1,18 @@
 /* global chrome, MediaRecorder, FileReader */
 
 chrome.runtime.onConnect.addListener(port => {
+  let rec = null
   port.onMessage.addListener(msg => {
     switch (msg.type) {
+      case 'REC_CLIENT_STOP':
+        console.log('Stopping recording')
+        if (!port.recorderPlaying || !rec) {
+          console.log('Nothing to stop')
+          return
+        }
+        port.recorderPlaying = false    
+        rec.stop()    
+        break
       case 'REC_CLIENT_PLAY':
         if (port.recorderPlaying) {
           console.log('Ignoring second play, already playing')
@@ -22,17 +32,20 @@ chrome.runtime.onConnect.addListener(port => {
                 minWidth: 1280,
                 maxWidth: 1280,
                 minHeight: 720,
-                maxHeight: 720
-                // 60 fps?
-                // minFrameRate: 60
+                maxHeight: 720,
+                minFrameRate: 60,
               }
             }
           }, stream => {
             // Now that we have the stream, we can make a media recorder
-            const rec = new MediaRecorder(stream, {
-              mimeType: 'video/webm; codecs=vp9'
-              // 15 Mbps?
-              // videoBitsPerSecond: 15 * 128 * 1024 * 8
+            rec = new MediaRecorder(stream, {
+              mimeType: 'video/webm; codecs=vp9',
+              // mimeType: 'video/webm; codecs=h264',
+              // mimeType: 'video/mpeg4',
+              // mimeType: 'video/x-matroska;codecs=avc1',
+              audioBitsPerSecond: 128000,
+              videoBitsPerSecond: 30000000,
+              // bitsPerSecond: 3000000 
             })
             rec.onerror = event => console.log('Recorder error', event)
             rec.onstart = event => port.postMessage({ type: 'REC_BACKEND_START' })
@@ -47,7 +60,7 @@ chrome.runtime.onConnect.addListener(port => {
                 reader.readAsBinaryString(event.data)
               }
             }
-            rec.start(8000)
+            rec.start(200)
           }, error => console.log('Unable to get user media', error))
         })
         break

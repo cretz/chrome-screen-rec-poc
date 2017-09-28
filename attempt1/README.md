@@ -40,6 +40,10 @@ Args:
 * `--click-N` - A selector to an element to click. `N` should be unique.
 * `--click-delay-N` - Number of milliseconds after seeing the selector before click should occur. Default is no time.
 
+Example:
+
+    node main.js --url="https://www.youtube.com/embed/0vrdgDdPApQ?autoplay=0&modestbranding=1&showinfo=0&controls=0" --click-play=.ytp-large-play-button
+
 ## Results
 
 These are only the results so far
