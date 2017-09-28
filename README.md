@@ -21,3 +21,6 @@ Good test case: https://www.youtube.com/embed/0vrdgDdPApQ
 ## Attempts
 
 * [`attempt1/`](attempt1) - Use Chrome automation and Chrome screen capture
+  * Result - The screen frames are just not captured fast enough
+* [`attempt2/`](attempt2) - Use Windows desktop duplication to capture
+  * Result - Video is high quality, but cannot do it headlessly

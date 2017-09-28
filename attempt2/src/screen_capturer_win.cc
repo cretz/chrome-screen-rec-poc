@@ -10,10 +10,61 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 #include <QtWinExtras>
+#include <tchar.h>
 #include <time.h>
 #include <Windows.h>
 
 namespace attempt2 {
+
+bool ScreenCapturer::CreateBackgroundDesktop(const QString& name) {
+  auto fail = [](const QString& text) -> bool {
+    qCritical() << "Create desktop failed:" << text;
+    return false;
+  };
+  auto desk = CreateDesktop(name.toStdWString().c_str(),
+                            nullptr,
+                            nullptr,
+                            DF_ALLOWOTHERACCOUNTHOOK,
+                            GENERIC_ALL,
+                            nullptr);
+  if (!desk) return fail("Desktop create failed");
+  if (!SetThreadDesktop(desk)) return fail("Set thread desktop fail");
+  return true;
+}
+
+bool ScreenCapturer::OpenChrome(const QString& exe, const QStringList& args) {
+  auto fail = [](const QString& text) -> bool {
+    qCritical() << "Open failed:" << text;
+    return false;
+  };
+
+  if (chrome_process_) return fail("Chrome already open");
+
+  auto cmd = (exe + " " + args.join(' ')).toStdWString();
+  std::vector<wchar_t> cmd_vec(cmd.begin(), cmd.end());
+  cmd_vec.push_back(0);
+  STARTUPINFO startup_info = { sizeof(startup_info) };
+  PROCESS_INFORMATION process_info = {};
+  auto res = CreateProcess(nullptr, cmd_vec.data(), nullptr, nullptr, false,
+                           0, nullptr, nullptr, &startup_info, &process_info);
+  if (!res) return fail("Failed starting chrome");
+  chrome_process_ = process_info.hProcess;
+  return true;
+}
+
+bool ScreenCapturer::CloseChrome() {
+  auto fail = [](const QString& text) -> bool {
+    qCritical() << "Close failed:" << text;
+    return false;
+  };
+
+  if (!chrome_process_) return fail("Chrome not open");
+  auto res = TerminateProcess(chrome_process_, 1);
+  if (!res) return fail("Process termination failed");
+  chrome_process_ = nullptr;
+
+  return true;
+}
 
 bool ScreenCapturer::SnapScreen(const QString& file) {
   // Grab the desktop DC

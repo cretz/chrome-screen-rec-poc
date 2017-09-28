@@ -13,9 +13,14 @@ class ScreenCapturer : public QObject {
 
   explicit ScreenCapturer(QObject* parent = nullptr);
 
+  bool CreateBackgroundDesktop(const QString& name);
+  bool OpenChrome(const QString& exe, const QStringList& args);
+  bool CloseChrome();
   bool SnapScreen(const QString& file);
-
   bool Record(const QString& file, int seconds);
+
+ private:
+  void* chrome_process_ = nullptr;
 };
 
 }  // namespace attempt2

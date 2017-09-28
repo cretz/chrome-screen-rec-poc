@@ -35,10 +35,11 @@ This takes a simple screenshot and records ~15 seconds of video.
 * Video is nice, high bitrate and framerate
 * We may have some sample timing concerns when serializing to video
 * All in same thread so surely missing some frames
+* Audio is a separate concern
+* Sadly we cannot do this in the background which sucks (CreateDesktop doesn't work w/ desktop duplication)
 
 ## TODO
 
 * Multiple threads
 * Make several videos comparing timing
-* Do this with CreateDesktop + SetThreadDesktop to support invisible background desktop
 * Audio
