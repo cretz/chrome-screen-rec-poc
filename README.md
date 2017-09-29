@@ -16,11 +16,19 @@ Chrome extensions recordings, webrtc/getUserMedia, Chromecast emulation, etc). S
 solve one problem (e.g. audio) but the PoC is not considered successful until it can all come together. Bonus points for
 a cross-platform solution.
 
-Good test case: https://www.youtube.com/embed/0vrdgDdPApQ
+Good starting test case: https://www.youtube.com/embed/0vrdgDdPApQ
+
+TODO: Need EME test case
 
 ## Attempts
 
 * [`attempt1/`](attempt1) - Use Chrome automation and Chrome screen capture
-  * Result - The screen frames are just not captured fast enough
+  * Result - The screen frames are just not captured fast enough, but close (maybe try threaded)
 * [`attempt2/`](attempt2) - Use Windows desktop duplication to capture
   * Result - Video is high quality, but cannot do it headlessly
+* `attemptN` - Use CEF + offscreen rendering + captureStream for audio only. Try threading as needed.
+* `attemptN` - Use CEF + captureStream (video + audio) w/ native callbacks. Try threading as needed.
+* `attemptN` - Use dev tools protocol + Page.\*screencast\*. Try headless. Use non-JS lang w/ concurrency.
+* `attemptN` - Custom Chrome build (e.g. a patch on top of https://github.com/Eloston/ungoogled-chromium/ if they get up
+  and running again) to hook into the audio/video as close to the source as possible.
+* `attemptN` - Custom Chrome build with custom CA key patch for Chromecast device. Then make Chromecast server.
